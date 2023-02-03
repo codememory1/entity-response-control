@@ -9,7 +9,6 @@ $ composer require codememory/entity-response-control
 ### What will be covered in this documentation?
 * How to create your ResponseControl ?
 * What types of constraints are there?
-* Какие констреинты существует ?
 * What constraints exist?
 * How to create your own Disassembler?
 
