@@ -210,7 +210,7 @@ final class MyValueConverterHandler implements ValueConverterConstraintHandlerIn
 }
 ```
 
-### Registration of exhibits
+### Registration constraints
 ```php
 #!!! Please note that the registration of the constructs must be done before the build is executed.
 use Codememory\EntityResponseControl\Registers\ConstraintHandlerRegister;
