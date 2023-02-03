@@ -1,0 +1,27 @@
+<?php
+
+use Codememory\EntityResponseControl\Constraints\System\AliasInResponseConstraintHandler;
+use Codememory\EntityResponseControl\Constraints\System\AsCustomConstraintHandler;
+use Codememory\EntityResponseControl\Constraints\System\PrefixConstraintHandler;
+use Codememory\EntityResponseControl\Constraints\Value\AsCountConstraintHandler;
+use Codememory\EntityResponseControl\Constraints\Value\CallbackConstraintHandler;
+use Codememory\EntityResponseControl\Constraints\Value\CallbackResponseConstraintHandler;
+use Codememory\EntityResponseControl\Constraints\Value\DateTimeConstraintHandler;
+use Codememory\EntityResponseControl\ConstraintTypeHandlers\AvailabilityConstraintHandler;
+use Codememory\EntityResponseControl\ConstraintTypeHandlers\SystemConstraintHandler;
+use Codememory\EntityResponseControl\ConstraintTypeHandlers\ValueConverterConstraintHandler;
+use Codememory\EntityResponseControl\Registers\ConstraintHandlerRegister;
+use Codememory\EntityResponseControl\Registers\ConstraintTypeHandlerRegister;
+
+ConstraintHandlerRegister::register(new AliasInResponseConstraintHandler());
+ConstraintHandlerRegister::register(new AsCustomConstraintHandler());
+ConstraintHandlerRegister::register(new PrefixConstraintHandler());
+
+ConstraintHandlerRegister::register(new AsCountConstraintHandler());
+ConstraintHandlerRegister::register(new CallbackConstraintHandler());
+ConstraintHandlerRegister::register(new CallbackResponseConstraintHandler());
+ConstraintHandlerRegister::register(new DateTimeConstraintHandler());
+
+ConstraintTypeHandlerRegister::register(new SystemConstraintHandler());
+ConstraintTypeHandlerRegister::register(new AvailabilityConstraintHandler());
+ConstraintTypeHandlerRegister::register(new ValueConverterConstraintHandler());

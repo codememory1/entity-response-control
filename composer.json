@@ -1,0 +1,29 @@
+{
+    "name": "codememory/entity-response-control",
+    "description": "Controls the response from entities or other objects based on constraints",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Codememory\\EntityResponseControl\\": "src/"
+        },
+        "files": ["src/register.php"]
+    },
+    "authors": [
+        {
+            "name": "Codememory",
+            "email": "kostynd1@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "symfony/string": "^6.1"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^6.2"
+    }
+}
