@@ -35,6 +35,10 @@ class ResponseControl implements ResponseControlInterface
 
     public function toArray(): array
     {
+        if ($this->asOne && [] !== $this->collectedResponse) {
+            return $this->collectedResponse[array_key_first($this->collectedResponse)];
+        }
+
         return $this->collectedResponse;
     }
 
