@@ -3,10 +3,10 @@
 namespace Codememory\EntityResponseControl\Constraints\Value;
 
 use Codememory\EntityResponseControl\ConstraintTypeControl;
+use Codememory\EntityResponseControl\Exception\ResponseControlNotFoundException;
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 use Codememory\EntityResponseControl\Interfaces\ValueConverterConstraintHandlerInterface;
 use function is_array;
-use RuntimeException;
 
 final class CallbackResponseConstraintHandler implements ValueConverterConstraintHandlerInterface
 {
@@ -15,24 +15,25 @@ final class CallbackResponseConstraintHandler implements ValueConverterConstrain
      */
     public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): array
     {
-        $namespaceResponseData = $constraint->namespaceResponseData;
+        $namespaceResponseControl = $constraint->namespaceResponseData;
 
-        if (false === class_exists($namespaceResponseData)) {
-            throw new RuntimeException("Class ResponseControl: {$namespaceResponseData} not exist");
+        if (false === class_exists($namespaceResponseControl)) {
+            throw new ResponseControlNotFoundException($namespaceResponseControl);
         }
 
         if (!is_array($constraintTypeControl->getValue())) {
             return [];
         }
 
-        $responseData = new $namespaceResponseData((new $constraint->disassembler())());
+        $disassembler = (new $constraint->disassembler())();
+        $responseControl = new $namespaceResponseControl($disassembler);
 
-        $responseData
+        $responseControl
             ->setData($constraintTypeControl->getValue())
             ->getObjectDisassembler()
             ->setIgnoreDataProperties($constraint->ignoreProperties)
             ->setIgnoreAllDataPropertiesExcept($constraint->onlyProperties);
 
-        return $responseData->collect()->toArray();
+        return $responseControl->collect()->toArray();
     }
 }

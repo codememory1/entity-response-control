@@ -3,9 +3,9 @@
 namespace Codememory\EntityResponseControl\Constraints\Value;
 
 use Codememory\EntityResponseControl\ConstraintTypeControl;
+use Codememory\EntityResponseControl\Exception\MethodNotFoundException;
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 use Codememory\EntityResponseControl\Interfaces\ValueConverterConstraintHandlerInterface;
-use LogicException;
 
 final class CallbackConstraintHandler implements ValueConverterConstraintHandlerInterface
 {
@@ -15,9 +15,7 @@ final class CallbackConstraintHandler implements ValueConverterConstraintHandler
     public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): mixed
     {
         if (!method_exists($constraintTypeControl->responseControl, $constraint->methodName)) {
-            $responseControlNamespace = $constraintTypeControl->responseControl::class;
-
-            throw new LogicException("Method {$constraint->methodName} not exist in ResponseControl {$responseControlNamespace}");
+            throw new MethodNotFoundException($constraintTypeControl->responseControl, $constraint->methodName);
         }
 
         return $constraintTypeControl->responseControl->{$constraint->methodName}(
