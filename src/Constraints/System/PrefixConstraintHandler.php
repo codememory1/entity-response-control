@@ -3,9 +3,9 @@
 namespace Codememory\EntityResponseControl\Constraints\System;
 
 use Codememory\EntityResponseControl\ConstraintTypeControl;
+use Codememory\EntityResponseControl\Exception\MethodNotFoundException;
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 use Codememory\EntityResponseControl\Interfaces\SystemConstraintHandlerInterface;
-use LogicException;
 use function Symfony\Component\String\u;
 
 final class PrefixConstraintHandler implements SystemConstraintHandlerInterface
@@ -16,14 +16,13 @@ final class PrefixConstraintHandler implements SystemConstraintHandlerInterface
     public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): bool
     {
         if (null !== $constraint->method) {
-            if (!method_exists($constraintTypeControl->object, $constraint->method)) {
-                $objectNamespace = $constraintTypeControl->object::class;
+            $constraintTypeControl->setPrefixMethod($constraint->method);
 
-                throw new LogicException("Method {$constraint->method} not found to ResponseControl: {$objectNamespace}");
+            if (!method_exists($constraintTypeControl->object, $constraintTypeControl->getMethodName())) {
+                throw new MethodNotFoundException($constraintTypeControl->object, $constraintTypeControl->getMethodName());
             }
 
-            $constraintTypeControl->setPrefixMethod($constraint->method);
-            $constraintTypeControl->setValue($constraintTypeControl->object->{$constraint->method}());
+            $constraintTypeControl->setValue($constraintTypeControl->object->{$constraintTypeControl->getMethodName()}());
         }
 
         if (null !== $constraint->response) {

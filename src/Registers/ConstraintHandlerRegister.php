@@ -2,9 +2,9 @@
 
 namespace Codememory\EntityResponseControl\Registers;
 
+use Codememory\EntityResponseControl\Exception\ConstraintHandlerNotFoundException;
 use Codememory\EntityResponseControl\Interfaces\ConstraintHandlerInterface;
 use LogicException;
-use RuntimeException;
 
 class ConstraintHandlerRegister
 {
@@ -24,7 +24,7 @@ class ConstraintHandlerRegister
     public static function getConstraintHandler(string $namespace): ?ConstraintHandlerInterface
     {
         if (!array_key_exists($namespace, static::$handlers)) {
-            throw new RuntimeException("Constraint handler by namespace {$namespace} not found");
+            throw new ConstraintHandlerNotFoundException($namespace);
         }
 
         return static::$handlers[$namespace] ?? null;

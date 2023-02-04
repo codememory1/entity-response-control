@@ -3,9 +3,9 @@
 namespace Codememory\EntityResponseControl\Constraints\System;
 
 use Codememory\EntityResponseControl\ConstraintTypeControl;
+use Codememory\EntityResponseControl\Exception\MethodNotFoundException;
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 use Codememory\EntityResponseControl\Interfaces\SystemConstraintHandlerInterface;
-use LogicException;
 
 final class AsCustomConstraintHandler implements SystemConstraintHandlerInterface
 {
@@ -17,9 +17,7 @@ final class AsCustomConstraintHandler implements SystemConstraintHandlerInterfac
         $constraintTypeControl->setValue(null);
 
         if (!method_exists($constraintTypeControl->responseControl, $constraint->methodName)) {
-            $responseControlNamespace = $constraintTypeControl->responseControl::class;
-
-            throw new LogicException("Method {$constraint->methodName} not exist in ResponseControl {$responseControlNamespace}");
+            throw new MethodNotFoundException($constraintTypeControl->responseControl, $constraint->methodName);
         }
 
         $result = $constraintTypeControl->responseControl->{$constraint->methodName}(

@@ -50,7 +50,7 @@ class User {
     }
 }
 
-# Our ResponseControl
+// Our ResponseControl
 class UserResponse extends ResponseControl
 {
     private ?int $id = null;
