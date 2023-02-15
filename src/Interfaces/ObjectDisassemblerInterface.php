@@ -11,6 +11,8 @@ interface ObjectDisassemblerInterface
 
     public function setIgnoreDataProperties(array $names): self;
 
+    public function addIgnoreDataProperty(string $name): self;
+
     public function getIgnoredAllDataPropertiesExpect(): array;
 
     public function setIgnoreAllDataPropertiesExcept(array $names): self;

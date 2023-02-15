@@ -29,6 +29,13 @@ final class ObjectDisassembler implements ObjectDisassemblerInterface
         return $this;
     }
 
+    public function addIgnoreDataProperty(string $name): self
+    {
+        $this->ignoredDataProperties[] = $name;
+
+        return $this;
+    }
+
     public function getIgnoredAllDataPropertiesExpect(): array
     {
         return $this->ignoredAllDataPropertiesExpect;
