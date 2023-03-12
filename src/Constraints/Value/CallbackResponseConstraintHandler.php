@@ -25,7 +25,7 @@ final class CallbackResponseConstraintHandler implements ValueConverterConstrain
             return [];
         }
 
-        $disassembler = (new $constraint->disassembler())();
+        $disassembler = new ($constraint->disassembler)();
         $responseControl = new $namespaceResponseControl($disassembler);
 
         $responseControl
