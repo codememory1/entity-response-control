@@ -21,7 +21,7 @@ final class CallbackResponseConstraintHandler implements ValueConverterConstrain
             throw new ResponseControlNotFoundException($namespaceResponseControl);
         }
 
-        if (!is_array($constraintTypeControl->getValue())) {
+        if (!is_array($constraintTypeControl->getValue()) && !is_object($constraintTypeControl->getValue())) {
             return [];
         }
 
