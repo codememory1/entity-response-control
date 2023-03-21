@@ -2,14 +2,14 @@
 
 namespace Codememory\EntityResponseControl\ObjectDisassemblers;
 
-use Codememory\EntityResponseControl\Adapters\ReflectionAdapter;
 use Codememory\EntityResponseControl\ConstraintTypeControl;
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 use Codememory\EntityResponseControl\Interfaces\ObjectDisassemblerInterface;
 use Codememory\EntityResponseControl\Registers\ConstraintHandlerRegister;
 use Codememory\EntityResponseControl\Registers\ConstraintTypeHandlerRegister;
 use Codememory\EntityResponseControl\ResponseControl;
-use ReflectionProperty;
+use Codememory\Reflection\Reflectors\ClassReflector;
+use Codememory\Reflection\Reflectors\PropertyReflector;
 
 final class ObjectDisassembler implements ObjectDisassemblerInterface
 {
@@ -48,11 +48,9 @@ final class ObjectDisassembler implements ObjectDisassemblerInterface
         return $this;
     }
 
-    public function disassemble(object $object, ResponseControl $responseControl, ReflectionAdapter $reflectionAdapter): self
+    public function disassemble(object $object, ResponseControl $responseControl, ClassReflector $classReflector): self
     {
-        $properties = $reflectionAdapter->getControlledProperties($this->getIgnoredDataProperties(), $this->getIgnoredAllDataPropertiesExpect());
-
-        foreach ($properties as $property) {
+        foreach ($this->getProperties($classReflector) as $property) {
             $constraintTypeControl = new ConstraintTypeControl($responseControl, $property, $object);
 
             $this->propertyAttributesHandler($property, $constraintTypeControl);
@@ -67,22 +65,33 @@ final class ObjectDisassembler implements ObjectDisassemblerInterface
         return $this->data;
     }
 
-    private function propertyAttributesHandler(ReflectionProperty $property, ConstraintTypeControl $constraintTypeControl): void
+    private function getProperties(ClassReflector $classReflector): array
+    {
+        return array_filter(
+            $classReflector->getPrivateProperties(),
+            function(PropertyReflector $property) {
+                $notIgnored = !in_array($property->getName(), $this->getIgnoredDataProperties(), true);
+                $notIgnoredWithRespectToOnly = [] === $this->getIgnoredAllDataPropertiesExpect() || in_array($property->getName(), $this->getIgnoredAllDataPropertiesExpect(), true);
+
+                return ('Response' === $property->getClass() || 'AccountResponse' === $property->getClass()) && $notIgnored && $notIgnoredWithRespectToOnly;
+            }
+        );
+    }
+
+    private function propertyAttributesHandler(PropertyReflector $property, ConstraintTypeControl $constraintTypeControl): void
     {
         foreach ($property->getAttributes() as $attribute) {
-            $attributeInstance = $attribute->newInstance();
+            $attributeInstance = $attribute->getInstance();
 
             if ($attributeInstance instanceof ConstraintInterface) {
-                foreach (ConstraintTypeHandlerRegister::getHandlers() as $constraintTypeHandler) {
-                    $constraintTypeHandler->handle(
-                        $constraintTypeControl,
-                        $attributeInstance,
-                        ConstraintHandlerRegister::getConstraintHandler($attributeInstance->getHandler())
-                    );
+                ConstraintTypeHandlerRegister::getHandler($attributeInstance->getType())->handle(
+                    $constraintTypeControl,
+                    $attributeInstance,
+                    ConstraintHandlerRegister::getConstraintHandler($attributeInstance->getHandler())
+                );
 
-                    if (!$constraintTypeControl->isAllowedToOutput()) {
-                        break;
-                    }
+                if (!$constraintTypeControl->isAllowedToOutput()) {
+                    break;
                 }
             }
 

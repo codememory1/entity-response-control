@@ -7,6 +7,7 @@ use Codememory\EntityResponseControl\Exception\ResponseControlNotFoundException;
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 use Codememory\EntityResponseControl\Interfaces\ValueConverterConstraintHandlerInterface;
 use function is_array;
+use function is_object;
 
 final class CallbackResponseConstraintHandler implements ValueConverterConstraintHandlerInterface
 {
@@ -26,7 +27,7 @@ final class CallbackResponseConstraintHandler implements ValueConverterConstrain
         }
 
         $disassembler = new ($constraint->disassembler)();
-        $responseControl = new $namespaceResponseControl($disassembler);
+        $responseControl = new $namespaceResponseControl($disassembler, $constraintTypeControl->responseControl->getReflectorManager());
 
         $responseControl
             ->setData($constraintTypeControl->getValue())

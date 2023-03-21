@@ -2,7 +2,7 @@
 
 namespace Codememory\EntityResponseControl;
 
-use ReflectionProperty;
+use Codememory\Reflection\Reflectors\PropertyReflector;
 use function Symfony\Component\String\u;
 
 final class ConstraintTypeControl
@@ -14,7 +14,7 @@ final class ConstraintTypeControl
 
     public function __construct(
         public readonly ResponseControl $responseControl,
-        public readonly ReflectionProperty $property,
+        public readonly PropertyReflector $property,
         public readonly object $object
     ) {
         $this->propertyNameInResponse = u($this->property->getName())->snake()->toString();
