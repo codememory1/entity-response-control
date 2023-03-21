@@ -3,6 +3,7 @@
 namespace Codememory\EntityResponseControl\Constraints\Value;
 
 use Attribute;
+use Codememory\EntityResponseControl\ConstraintTypeHandlers\ValueConverterConstraintHandler;
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 use Codememory\EntityResponseControl\ObjectDisassemblers\ObjectDisassembler;
 
@@ -15,6 +16,11 @@ final class CallbackResponseConstraint implements ConstraintInterface
         public readonly array $ignoreProperties = [],
         public readonly array $onlyProperties = []
     ) {
+    }
+
+    public function getType(): string
+    {
+        return ValueConverterConstraintHandler::class;
     }
 
     public function getHandler(): string

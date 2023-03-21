@@ -4,6 +4,7 @@ namespace Codememory\EntityResponseControl\Registers;
 
 use Codememory\EntityResponseControl\Interfaces\ConstraintTypeHandlerInterface;
 use LogicException;
+use RuntimeException;
 
 class ConstraintTypeHandlerRegister
 {
@@ -26,5 +27,14 @@ class ConstraintTypeHandlerRegister
     public static function getHandlers(): array
     {
         return static::$handlers;
+    }
+
+    public static function getHandler(string $namespace): ConstraintTypeHandlerInterface
+    {
+        if (!array_key_exists($namespace, self::$handlers)) {
+            throw new RuntimeException("Constraint type \"{$namespace}\" not found");
+        }
+
+        return self::$handlers[$namespace];
     }
 }

@@ -8,11 +8,19 @@ use Codememory\EntityResponseControl\Interfaces\ObjectDisassemblerInterface;
 use Codememory\EntityResponseControl\Registers\ConstraintHandlerRegister;
 use Codememory\EntityResponseControl\Registers\ConstraintTypeHandlerRegister;
 use Codememory\EntityResponseControl\ResponseControl;
+use Codememory\Reflection\ReflectorManager;
+use Psr\Cache\InvalidArgumentException;
+use ReflectionException;
 
 final class ResponseControlFactory
 {
+    /**
+     * @throws ReflectionException
+     * @throws InvalidArgumentException
+     */
     public static function makeResponseControl(
         ObjectDisassemblerInterface $disassembler,
+        ReflectorManager $reflectorManager,
         array $constraintHandlers = [],
         array $constraintTypeHandlers = []
     ): ResponseControl {
@@ -28,6 +36,6 @@ final class ResponseControlFactory
             }
         }
 
-        return new ResponseControl($disassembler);
+        return new ResponseControl($disassembler, $reflectorManager);
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Codememory\EntityResponseControl\Interfaces;
 
-use Codememory\EntityResponseControl\Adapters\ReflectionAdapter;
 use Codememory\EntityResponseControl\ResponseControl;
+use Codememory\Reflection\Reflectors\ClassReflector;
 
 interface ObjectDisassemblerInterface
 {
@@ -17,7 +17,7 @@ interface ObjectDisassemblerInterface
 
     public function setIgnoreAllDataPropertiesExcept(array $names): self;
 
-    public function disassemble(object $object, ResponseControl $responseControl, ReflectionAdapter $reflectionAdapter): self;
+    public function disassemble(object $object, ResponseControl $responseControl, ClassReflector $classReflector): self;
 
     public function toArray(): array;
 }
