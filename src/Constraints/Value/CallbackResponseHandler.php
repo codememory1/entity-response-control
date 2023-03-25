@@ -9,10 +9,10 @@ use Codememory\EntityResponseControl\Interfaces\ValueConverterConstraintHandlerI
 use function is_array;
 use function is_object;
 
-final class CallbackResponseConstraintHandler implements ValueConverterConstraintHandlerInterface
+final class CallbackResponseHandler implements ValueConverterConstraintHandlerInterface
 {
     /**
-     * @param CallbackResponseConstraint $constraint
+     * @param CallbackResponse $constraint
      */
     public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): array
     {

@@ -7,7 +7,7 @@ use Codememory\EntityResponseControl\ConstraintTypeHandlers\SystemConstraintHand
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class PrefixConstraint implements ConstraintInterface
+final class Prefix implements ConstraintInterface
 {
     public function __construct(
         public readonly ?string $method = null,
@@ -22,6 +22,6 @@ final class PrefixConstraint implements ConstraintInterface
 
     public function getHandler(): string
     {
-        return PrefixConstraintHandler::class;
+        return PrefixHandler::class;
     }
 }

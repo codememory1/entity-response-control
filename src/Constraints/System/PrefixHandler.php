@@ -8,10 +8,10 @@ use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 use Codememory\EntityResponseControl\Interfaces\SystemConstraintHandlerInterface;
 use function Symfony\Component\String\u;
 
-final class PrefixConstraintHandler implements SystemConstraintHandlerInterface
+final class PrefixHandler implements SystemConstraintHandlerInterface
 {
     /**
-     * @param PrefixConstraint $constraint
+     * @param Prefix $constraint
      */
     public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): bool
     {
