@@ -6,10 +6,10 @@ use Codememory\EntityResponseControl\ConstraintTypeControl;
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 use Codememory\EntityResponseControl\Interfaces\SystemConstraintHandlerInterface;
 
-final class AliasInResponseConstraintHandler implements SystemConstraintHandlerInterface
+final class AliasInResponseHandler implements SystemConstraintHandlerInterface
 {
     /**
-     * @param AliasInResponseConstraint $constraint
+     * @param AliasInResponse $constraint
      */
     public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): bool
     {

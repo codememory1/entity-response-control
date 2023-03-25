@@ -53,7 +53,7 @@ final class ObjectDisassembler implements ObjectDisassemblerInterface
         foreach ($this->getProperties($classReflector) as $property) {
             $constraintTypeControl = new ConstraintTypeControl($responseControl, $property, $object);
 
-            $this->propertyAttributesHandler($property, $constraintTypeControl);
+            $this->propertyAttributesHandler($classReflector, $property, $constraintTypeControl);
             $this->savePropertyData($constraintTypeControl);
         }
 
@@ -78,9 +78,9 @@ final class ObjectDisassembler implements ObjectDisassemblerInterface
         );
     }
 
-    private function propertyAttributesHandler(PropertyReflector $property, ConstraintTypeControl $constraintTypeControl): void
+    private function propertyAttributesHandler(ClassReflector $classReflector, PropertyReflector $propertyReflector, ConstraintTypeControl $constraintTypeControl): void
     {
-        foreach ($property->getAttributes() as $attribute) {
+        foreach ($this->getPropertyAttributes($classReflector, $propertyReflector) as $attribute) {
             $attributeInstance = $attribute->getInstance();
 
             if ($attributeInstance instanceof ConstraintInterface) {
@@ -99,6 +99,14 @@ final class ObjectDisassembler implements ObjectDisassemblerInterface
                 break;
             }
         }
+    }
+
+    private function getPropertyAttributes(ClassReflector $classReflector, PropertyReflector $propertyReflector): array
+    {
+        return [
+            ...$propertyReflector->getAttributes(),
+            ...$classReflector->getAttributes()
+        ];
     }
 
     private function savePropertyData(ConstraintTypeControl $constraintTypeControl): void

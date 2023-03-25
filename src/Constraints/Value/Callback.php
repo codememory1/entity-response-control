@@ -7,7 +7,7 @@ use Codememory\EntityResponseControl\ConstraintTypeHandlers\ValueConverterConstr
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class CallbackConstraint implements ConstraintInterface
+final class Callback implements ConstraintInterface
 {
     public function __construct(
         public readonly string $methodName
@@ -21,6 +21,6 @@ final class CallbackConstraint implements ConstraintInterface
 
     public function getHandler(): string
     {
-        return CallbackConstraintHandler::class;
+        return CallbackHandler::class;
     }
 }

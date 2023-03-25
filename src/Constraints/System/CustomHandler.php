@@ -7,10 +7,10 @@ use Codememory\EntityResponseControl\Exception\MethodNotFoundException;
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 use Codememory\EntityResponseControl\Interfaces\SystemConstraintHandlerInterface;
 
-final class AsCustomConstraintHandler implements SystemConstraintHandlerInterface
+final class CustomHandler implements SystemConstraintHandlerInterface
 {
     /**
-     * @param AsCustomConstraint $constraint
+     * @param Custom $constraint
      */
     public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): bool
     {

@@ -8,6 +8,7 @@ use function Symfony\Component\String\u;
 final class ConstraintTypeControl
 {
     private string $propertyNameInResponse;
+    private ?string $methodName = null;
     private string $prefixMethod;
     private bool $isAllowedToOutput = true;
     private mixed $value;
@@ -41,9 +42,20 @@ final class ConstraintTypeControl
 
     public function getMethodName(): string
     {
+        if (null !== $this->methodName) {
+            return $this->methodName;
+        }
+
         return u("{$this->prefixMethod}_{$this->property->getName()}")
             ->camel()
             ->toString();
+    }
+
+    public function setMethodName(?string $name): self
+    {
+        $this->methodName = $name;
+
+        return $this;
     }
 
     public function setPrefixMethod(string $prefix): self

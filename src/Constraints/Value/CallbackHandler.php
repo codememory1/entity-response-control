@@ -7,10 +7,10 @@ use Codememory\EntityResponseControl\Exception\MethodNotFoundException;
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 use Codememory\EntityResponseControl\Interfaces\ValueConverterConstraintHandlerInterface;
 
-final class CallbackConstraintHandler implements ValueConverterConstraintHandlerInterface
+final class CallbackHandler implements ValueConverterConstraintHandlerInterface
 {
     /**
-     * @param CallbackConstraint $constraint
+     * @param callable $constraint
      */
     public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): mixed
     {

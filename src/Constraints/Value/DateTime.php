@@ -5,16 +5,13 @@ namespace Codememory\EntityResponseControl\Constraints\Value;
 use Attribute;
 use Codememory\EntityResponseControl\ConstraintTypeHandlers\ValueConverterConstraintHandler;
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
-use Codememory\EntityResponseControl\ObjectDisassemblers\ObjectDisassembler;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class CallbackResponseConstraint implements ConstraintInterface
+final class DateTime implements ConstraintInterface
 {
     public function __construct(
-        public readonly string $namespaceResponseData,
-        public readonly string $disassembler = ObjectDisassembler::class,
-        public readonly array $ignoreProperties = [],
-        public readonly array $onlyProperties = []
+        public readonly string $format = 'Y-m-d H:i:s',
+        public readonly bool $full = false
     ) {
     }
 
@@ -25,6 +22,6 @@ final class CallbackResponseConstraint implements ConstraintInterface
 
     public function getHandler(): string
     {
-        return CallbackResponseConstraintHandler::class;
+        return DateTimeHandler::class;
     }
 }

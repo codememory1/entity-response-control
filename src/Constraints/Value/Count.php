@@ -7,7 +7,7 @@ use Codememory\EntityResponseControl\ConstraintTypeHandlers\ValueConverterConstr
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class AsCountConstraint implements ConstraintInterface
+final class Count implements ConstraintInterface
 {
     public function getType(): string
     {
@@ -16,6 +16,6 @@ final class AsCountConstraint implements ConstraintInterface
 
     public function getHandler(): string
     {
-        return AsCountConstraintHandler::class;
+        return CountHandler::class;
     }
 }

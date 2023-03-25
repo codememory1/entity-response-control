@@ -9,10 +9,10 @@ use Countable;
 use function is_array;
 use function is_string;
 
-final class AsCountConstraintHandler implements ValueConverterConstraintHandlerInterface
+final class CountHandler implements ValueConverterConstraintHandlerInterface
 {
     /**
-     * @param AsCountConstraint $constraint
+     * @param Count $constraint
      */
     public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): mixed
     {

@@ -7,10 +7,10 @@ use Codememory\EntityResponseControl\ConstraintTypeHandlers\SystemConstraintHand
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class AliasInResponseConstraint implements ConstraintInterface
+final class Custom implements ConstraintInterface
 {
     public function __construct(
-        public readonly string $alias
+        public readonly string $methodName
     ) {
     }
 
@@ -21,6 +21,6 @@ final class AliasInResponseConstraint implements ConstraintInterface
 
     public function getHandler(): string
     {
-        return AliasInResponseConstraintHandler::class;
+        return CustomHandler::class;
     }
 }
