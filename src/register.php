@@ -9,8 +9,10 @@ use Codememory\EntityResponseControl\Constraints\Value\ArrayValuesHandler;
 use Codememory\EntityResponseControl\Constraints\Value\CallbackHandler;
 use Codememory\EntityResponseControl\Constraints\Value\CallbackResponseHandler;
 use Codememory\EntityResponseControl\Constraints\Value\CountHandler;
+use Codememory\EntityResponseControl\Constraints\Value\CropStringHandler;
 use Codememory\EntityResponseControl\Constraints\Value\DateTimeHandler;
 use Codememory\EntityResponseControl\Constraints\Value\FromEnumHandler;
+use Codememory\EntityResponseControl\Constraints\Value\XSSHandler;
 use Codememory\EntityResponseControl\ConstraintTypeHandlers\AvailabilityConstraintHandler;
 use Codememory\EntityResponseControl\ConstraintTypeHandlers\SystemConstraintHandler;
 use Codememory\EntityResponseControl\ConstraintTypeHandlers\ValueConverterConstraintHandler;
@@ -28,6 +30,8 @@ ConstraintHandlerRegister::register(new CallbackResponseHandler());
 ConstraintHandlerRegister::register(new DateTimeHandler());
 ConstraintHandlerRegister::register(new FromEnumHandler());
 ConstraintHandlerRegister::register(new ArrayValuesHandler());
+ConstraintHandlerRegister::register(new XSSHandler());
+ConstraintHandlerRegister::register(new CropStringHandler());
 
 ConstraintHandlerRegister::register(new HiddenNullableHandler());
 

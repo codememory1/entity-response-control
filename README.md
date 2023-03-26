@@ -77,28 +77,37 @@ $response = $userResponse
 
 ## Let's take a look at the constructs
 * System
-  * AliasInResponse - Display different name in response
-    * $name: string - Property name in response
-  * Prefix - Change the prefix of the calling method (default is get) or change the prefix in the response
-    * $methodPrefix: string | null - Prefix method
-    * $responsePrefix: string | null - Prefix in response
-  * AsCustom - Custom property, call to get method will be ignored
-    * $methodName: string - Method name
+  * __AliasInResponse__ - Display different name in response
+    * __$name__: string - Property name in response
+  * __Prefix__ - Change the prefix of the calling method (default is get) or change the prefix in the response
+    * __$methodPrefix__: string | null - Prefix method
+    * __$responsePrefix__: string | null - Prefix in response
+  * __Custom__ - Custom property, call to get method will be ignored
+    * __$methodName__: string - Method name
 
 
 * Availability - There are none available, because basically these constructs depend on the logic of your application. Below is an example of how to create such constructs
 
 
 * ValueConverter
-  * AsCount - If the property is an array or implements the Countable interface, the count method will be called, if the value is a string, the length of the string will be counted, the response type is always integer
-  * Callback - Creating your own callback, this method must be created inside your ResponseControl and the public access modifier
-    * $methodName: string - Method name
-  * CallbackResponse - The value of the property will be passed through another ResponseControl. Be careful to use one of the last arguments so you don't end up with a circular dependency
-    * $responseControl: string - Namespace of the ResponseControl class
-    * $ignoreProperties: array<string> - Ignore some properties from $responseControl
-    * $onlyProperties: array<string> - Ignore all properties from $responseControl except those listed
-  * DateTime - Expects the property value to be the DateTimeInterface interface, if so, the given object will be converted to the default format or to the format you specify
-    * $format: string : default: 'Y-m-d H:i:s'
+  * __Count__ - If the property is an array or implements the Countable interface, the count method will be called, if the value is a string, the length of the string will be counted, the response type is always integer
+  * __ArrayValues__ - Converts a multi array or an array of objects to an array of values
+    * __$key__: string - The name of the array key or the name of the method to be called
+  * __Callback__ - Creating your own callback, this method must be created inside your ResponseControl and the public access modifier
+    * __$methodName__: string - Method name
+  * __CallbackResponse__ - The value of the property will be passed through another ResponseControl. Be careful to use one of the last arguments so you don't end up with a circular dependency
+    * __$responseControl__: string - Namespace of the ResponseControl class
+    * __$ignoreProperties__: array<string> - Ignore some properties from $responseControl
+    * __$onlyProperties__: array<string> - Ignore all properties from $responseControl except those listed
+  * __DateTime__ - Expects the property value to be the DateTimeInterface interface, if so, the given object will be converted to the default format or to the format you specify
+    * __$format__: string - default(Y-m-d H:i:s) - Format date
+    * __$full__: bool - default(false) - If true instead of a string, a DateTime array with full information will be returned
+  * __XSS__ - Protecting input strings or strings in an array from XSS attack
+  * __FromEnum__ - Returns an array consisting of key and label from Enum
+    * __$enum__ - Enum namespace
+  * __CropString__ - Trims a string to its maximum length
+    * __$maxlength__: INT - Maximum string length
+    * __$end__: string - default(...) - Character at the end of a string if the string was truncated
 
 ### Creating your own constraints
 
