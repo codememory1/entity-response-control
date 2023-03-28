@@ -6,12 +6,14 @@ use Codememory\EntityResponseControl\Constraints\System\CustomHandler;
 use Codememory\EntityResponseControl\Constraints\System\GetterMethodNameHandler;
 use Codememory\EntityResponseControl\Constraints\System\PrefixHandler;
 use Codememory\EntityResponseControl\Constraints\Value\ArrayValuesHandler;
+use Codememory\EntityResponseControl\Constraints\Value\BooleanToHandler;
 use Codememory\EntityResponseControl\Constraints\Value\CallbackHandler;
 use Codememory\EntityResponseControl\Constraints\Value\CallbackResponseHandler;
 use Codememory\EntityResponseControl\Constraints\Value\CountHandler;
 use Codememory\EntityResponseControl\Constraints\Value\CropStringHandler;
 use Codememory\EntityResponseControl\Constraints\Value\DateTimeHandler;
 use Codememory\EntityResponseControl\Constraints\Value\FromEnumHandler;
+use Codememory\EntityResponseControl\Constraints\Value\MaxElementsHandler;
 use Codememory\EntityResponseControl\Constraints\Value\XSSHandler;
 use Codememory\EntityResponseControl\ConstraintTypeHandlers\AvailabilityConstraintHandler;
 use Codememory\EntityResponseControl\ConstraintTypeHandlers\SystemConstraintHandler;
@@ -32,6 +34,8 @@ ConstraintHandlerRegister::register(new FromEnumHandler());
 ConstraintHandlerRegister::register(new ArrayValuesHandler());
 ConstraintHandlerRegister::register(new XSSHandler());
 ConstraintHandlerRegister::register(new CropStringHandler());
+ConstraintHandlerRegister::register(new MaxElementsHandler());
+ConstraintHandlerRegister::register(new BooleanToHandler());
 
 ConstraintHandlerRegister::register(new HiddenNullableHandler());
 
