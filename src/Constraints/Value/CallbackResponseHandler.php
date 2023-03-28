@@ -16,13 +16,14 @@ final class CallbackResponseHandler implements ValueConverterConstraintHandlerIn
      */
     public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): array
     {
+        $value = $constraintTypeControl->getValue();
         $namespaceResponseControl = $constraint->namespaceResponseData;
 
         if (false === class_exists($namespaceResponseControl)) {
             throw new ResponseControlNotFoundException($namespaceResponseControl);
         }
 
-        if (!is_array($constraintTypeControl->getValue()) && !is_object($constraintTypeControl->getValue())) {
+        if (!is_array($value) && !is_object($value)) {
             return [];
         }
 
@@ -30,7 +31,7 @@ final class CallbackResponseHandler implements ValueConverterConstraintHandlerIn
         $responseControl = new $namespaceResponseControl($disassembler, $constraintTypeControl->responseControl->getReflectorManager());
 
         $responseControl
-            ->setData($constraintTypeControl->getValue())
+            ->setData($value)
             ->getObjectDisassembler()
             ->setIgnoreDataProperties($constraint->ignoreProperties)
             ->setIgnoreAllDataPropertiesExcept($constraint->onlyProperties);

@@ -7,6 +7,7 @@ use Codememory\EntityResponseControl\Interfaces\ResponseControlInterface;
 use Codememory\Reflection\ReflectorManager;
 use Codememory\Reflection\Reflectors\ClassReflector;
 use function is_object;
+use IteratorAggregate;
 use Psr\Cache\InvalidArgumentException;
 use ReflectionException;
 
@@ -35,8 +36,14 @@ class ResponseControl implements ResponseControlInterface
 
     public function setData(object|array $data): ResponseControlInterface
     {
-        $this->data = is_object($data) ? [$data] : $data;
-        $this->asOne = is_object($data);
+        if ($data instanceof IteratorAggregate) {
+            $this->data = $data;
+        } else if (is_object($data)) {
+            $this->data = [$data];
+            $this->asOne = true;
+        } else {
+            $this->data = $data;
+        }
 
         return $this;
     }
