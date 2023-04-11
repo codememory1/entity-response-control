@@ -2,39 +2,49 @@
 
 namespace Codememory\EntityResponseControl\Registers;
 
+use Codememory\EntityResponseControl\ConstraintTypeHandlers\AvailabilityConstraintHandler;
+use Codememory\EntityResponseControl\ConstraintTypeHandlers\SystemConstraintHandler;
+use Codememory\EntityResponseControl\ConstraintTypeHandlers\ValueConverterConstraintHandler;
 use Codememory\EntityResponseControl\Interfaces\ConstraintTypeHandlerInterface;
 use LogicException;
 use RuntimeException;
 
 class ConstraintTypeHandlerRegister
 {
-    protected static array $handlers = [];
+    protected array $handlers;
 
-    public static function register(ConstraintTypeHandlerInterface $handler): void
+    public function __construct()
+    {
+        $this->register(new SystemConstraintHandler());
+        $this->register(new AvailabilityConstraintHandler());
+        $this->register(new ValueConverterConstraintHandler());
+    }
+
+    public function register(ConstraintTypeHandlerInterface $handler): void
     {
         $handlerNamespace = $handler::class;
 
-        if (array_key_exists($handlerNamespace, static::$handlers)) {
+        if (array_key_exists($handlerNamespace, $this->handlers)) {
             throw new LogicException("The {$handlerNamespace} attribute handler is already registered");
         }
 
-        static::$handlers[$handlerNamespace] = $handler;
+        $this->handlers[$handlerNamespace] = $handler;
     }
 
     /**
      * @return array<int, ConstraintTypeHandlerInterface>
      */
-    public static function getHandlers(): array
+    public function getHandlers(): array
     {
-        return static::$handlers;
+        return $this->handlers;
     }
 
-    public static function getHandler(string $namespace): ConstraintTypeHandlerInterface
+    public function getHandler(string $namespace): ConstraintTypeHandlerInterface
     {
-        if (!array_key_exists($namespace, self::$handlers)) {
+        if (!array_key_exists($namespace, $this->handlers)) {
             throw new RuntimeException("Constraint type \"{$namespace}\" not found");
         }
 
-        return self::$handlers[$namespace];
+        return $this->handlers[$namespace];
     }
 }

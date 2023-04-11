@@ -28,6 +28,10 @@ $ composer require codememory/entity-response-control
 use Codememory\EntityResponseControl\Constraints\Value as RDCV;
 use Codememory\EntityResponseControl\ResponseControl;
 use Codememory\EntityResponseControl\ObjectDisassemblers\ObjectDisassembler;
+use Codememory\Reflection\ReflectorManager;
+use Codememory\EntityResponseControl\Registers\ConstraintHandlerRegister;
+use Codememory\EntityResponseControl\Registers\ConstraintTypeHandlerRegister;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 // We have some entity User
 class User {
@@ -60,7 +64,12 @@ class UserResponse extends ResponseControl
     private ?string $createdAt = null;
 }
 
-$userResponse = new UserResponse(new ObjectDisassembler());
+$userResponse = new UserResponse(
+    new ObjectDisassembler(),
+    new ReflectorManager(new FilesystemAdapter('entity-response-control', '/var/cache/codememory')),
+    new ConstraintTypeHandlerRegister(),
+    new ConstraintHandlerRegister()
+);
 $response = $userResponse
         ->setData(new User())
         ->collect()
@@ -119,6 +128,9 @@ use Codememory\EntityResponseControl\Interfaces\SystemConstraintHandlerInterface
 use Codememory\EntityResponseControl\ConstraintTypeControl;
 use Codememory\EntityResponseControl\Interfaces\AvailabilityConstraintHandlerInterface;
 use Codememory\EntityResponseControl\Interfaces\ValueConverterConstraintHandlerInterface;
+use Codememory\EntityResponseControl\ConstraintTypeHandlers\AvailabilityConstraintHandler;
+use Codememory\EntityResponseControl\ConstraintTypeHandlers\SystemConstraintHandler;
+use Codememory\EntityResponseControl\ConstraintTypeHandlers\ValueConverterConstraintHandler;
 
 // Constraint for changing the prefix when calling a method
 #[Attribute(Attribute::TARGET_PROPERTY)]
@@ -128,6 +140,11 @@ final class MySystem implements ConstraintInterface
     (
         public readonly string $prefix
     ) {}
+    
+    public function getType() : string
+    {
+        return SystemConstraintHandler::class;
+    }
     
     public function getHandler() : string
     {
@@ -164,6 +181,11 @@ final class MyAvailability implements ConstraintInterface
         public readonly string $withProperty
     ) {}
     
+    public function getType(): string
+    {
+        return AvailabilityConstraintHandler::class;
+    }
+    
     public function getHandler() : string
     {
         return MyAvailabilityHandler::class;
@@ -198,6 +220,11 @@ final class MyValueConverter implements ConstraintInterface
         public readonly string $withProperty
     ) {}
     
+    public function getType(): string
+    {
+        return ValueConverterConstraintHandler::class;
+    }
+    
     public function getHandler() : string
     {
         return MyValueConverterHandler::class;
@@ -224,9 +251,11 @@ final class MyValueConverterHandler implements ValueConverterConstraintHandlerIn
 #!!! Please note that the registration of the constructs must be done before the build is executed.
 use Codememory\EntityResponseControl\Registers\ConstraintHandlerRegister;
 
-ConstraintHandlerRegister::register(new MySystemHandler());
-ConstraintHandlerRegister::register(new MyAvailabilityHandler());
-ConstraintHandlerRegister::register(new MyValueConverterHandler());
+$constraintHandlerRegister = new ConstraintHandlerRegister();
+
+$constraintHandlerRegister->register(new MySystemHandler());
+$constraintHandlerRegister->register(new MyAvailabilityHandler());
+$constraintHandlerRegister->register(new MyValueConverterHandler());
 ```
 
 ### Creating your own content type
@@ -261,7 +290,9 @@ final MyConstraintType implements ConstraintTypeHandlerInterface
 #!!! Registration of types of constraint must be carried out before the work of the collector itself
 use Codememory\EntityResponseControl\Registers\ConstraintTypeHandlerRegister;
 
-ConstraintTypeHandlerRegister::register(new MyConstraintType());
+$constraintTypeHandlerRegister = new ConstraintTypeHandlerRegister();
+
+$constraintTypeHandlerRegister->register(new MyConstraintType());
 ```
 
 ### Consider creating your own Disassembler
@@ -269,7 +300,11 @@ ConstraintTypeHandlerRegister::register(new MyConstraintType());
 #!!! All work takes place in the Disassembler and the creation of the Disassembler itself is not recommended.
 
 use Codememory\EntityResponseControl\Interfaces\ObjectDisassemblerInterface;
-use Codememory\EntityResponseControl\Adapters\ReflectionAdapter;
+use Codememory\Reflection\Reflectors\ClassReflector;
+use Codememory\Reflection\ReflectorManager;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Codememory\EntityResponseControl\Registers\ConstraintTypeHandlerRegister;
+use Codememory\EntityResponseControl\Registers\ConstraintHandlerRegister;
 
 class MyObjectDisassembler implements ObjectDisassemblerInterface {
     private array $ignoredDataProperties = [];
@@ -305,10 +340,10 @@ class MyObjectDisassembler implements ObjectDisassemblerInterface {
         return $this->data;
     }
     
-    public function disassemble(object $object, ResponseControl $responseControl, ReflectionAdapter $reflectionAdapter): self
+    public function disassemble(object $object, ResponseControl $responseControl, ClassReflector $classReflector): self
     {
         // Get the properties of the ResponseControl
-        foreach ($reflectionAdapter->getControlledProperties() as $property) {
+        foreach ($classReflector->getProperties() as $property) {
             // Getting property attributes
             foreach ($property->getAttributes() as $attribute) {
                 // We start processing properties by creating our own ConstraintTypeControl logic...
@@ -319,7 +354,12 @@ class MyObjectDisassembler implements ObjectDisassemblerInterface {
 
 // An example of using our UserResponse with the new Disassembler
 
-$userResponse = new UserResponse(new MyObjectDisassembler());
+$userResponse = new UserResponse(
+    new MyObjectDisassembler(),
+    new ReflectorManager(new FilesystemAdapter('entity-response-control', '/var/cache/codememory')),
+    new ConstraintTypeHandlerRegister(),
+    new ConstraintHandlerRegister()
+);
 
 $userResponse
     ->setData([new User()])
