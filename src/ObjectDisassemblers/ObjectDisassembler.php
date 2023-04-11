@@ -5,8 +5,6 @@ namespace Codememory\EntityResponseControl\ObjectDisassemblers;
 use Codememory\EntityResponseControl\ConstraintTypeControl;
 use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 use Codememory\EntityResponseControl\Interfaces\ObjectDisassemblerInterface;
-use Codememory\EntityResponseControl\Registers\ConstraintHandlerRegister;
-use Codememory\EntityResponseControl\Registers\ConstraintTypeHandlerRegister;
 use Codememory\EntityResponseControl\ResponseControl;
 use Codememory\Reflection\Reflectors\ClassReflector;
 use Codememory\Reflection\Reflectors\PropertyReflector;
@@ -84,11 +82,10 @@ final class ObjectDisassembler implements ObjectDisassemblerInterface
             $attributeInstance = $attribute->getInstance();
 
             if ($attributeInstance instanceof ConstraintInterface) {
-                ConstraintTypeHandlerRegister::getHandler($attributeInstance->getType())->handle(
-                    $constraintTypeControl,
-                    $attributeInstance,
-                    ConstraintHandlerRegister::getConstraintHandler($attributeInstance->getHandler())
-                );
+                $typeHandler = $constraintTypeControl->responseControl->getConstraintTypeHandlerRegister()->getHandler($attributeInstance->getType());
+                $constraintHandler = $constraintTypeControl->responseControl->getConstraintHandlerRegister()->getHandler($attributeInstance->getHandler());
+
+                $typeHandler->handle($constraintTypeControl, $attributeInstance, $constraintHandler);
 
                 if (!$constraintTypeControl->isAllowedToOutput()) {
                     break;

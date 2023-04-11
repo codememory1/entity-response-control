@@ -4,6 +4,8 @@ namespace Codememory\EntityResponseControl;
 
 use Codememory\EntityResponseControl\Interfaces\ObjectDisassemblerInterface;
 use Codememory\EntityResponseControl\Interfaces\ResponseControlInterface;
+use Codememory\EntityResponseControl\Registers\ConstraintHandlerRegister;
+use Codememory\EntityResponseControl\Registers\ConstraintTypeHandlerRegister;
 use Codememory\Reflection\ReflectorManager;
 use Codememory\Reflection\Reflectors\ClassReflector;
 use function is_object;
@@ -24,7 +26,9 @@ class ResponseControl implements ResponseControlInterface
      */
     public function __construct(
         protected readonly ObjectDisassemblerInterface $objectDisassembler,
-        protected readonly ReflectorManager $reflectorManager
+        protected readonly ReflectorManager $reflectorManager,
+        protected readonly ConstraintTypeHandlerRegister $constraintTypeHandlerRegister,
+        protected readonly ConstraintHandlerRegister $constraintHandlerRegister
     ) {
         $this->reflector = $this->reflectorManager->getReflector(static::class);
     }
@@ -32,6 +36,16 @@ class ResponseControl implements ResponseControlInterface
     public function getReflectorManager(): ReflectorManager
     {
         return $this->reflectorManager;
+    }
+
+    public function getConstraintTypeHandlerRegister(): ConstraintTypeHandlerRegister
+    {
+        return $this->constraintTypeHandlerRegister;
+    }
+
+    public function getConstraintHandlerRegister(): ConstraintHandlerRegister
+    {
+        return $this->constraintHandlerRegister;
     }
 
     public function setData(object|array $data): ResponseControlInterface
