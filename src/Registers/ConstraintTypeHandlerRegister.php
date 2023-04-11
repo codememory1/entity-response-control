@@ -11,7 +11,7 @@ use RuntimeException;
 
 class ConstraintTypeHandlerRegister
 {
-    protected array $handlers;
+    protected array $handlers = [];
 
     public function __construct()
     {

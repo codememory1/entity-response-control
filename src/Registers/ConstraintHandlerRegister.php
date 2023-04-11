@@ -23,7 +23,7 @@ use LogicException;
 
 class ConstraintHandlerRegister
 {
-    protected array $handlers;
+    protected array $handlers = [];
 
     public function __construct()
     {
