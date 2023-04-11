@@ -69,11 +69,11 @@ final class ObjectDisassembler implements ObjectDisassemblerInterface
     {
         return array_filter(
             $classReflector->getPrivateProperties(),
-            function(PropertyReflector $property) {
+            function(PropertyReflector $property) use ($classReflector) {
                 $notIgnored = !in_array($property->getName(), $this->getIgnoredDataProperties(), true);
                 $notIgnoredWithRespectToOnly = [] === $this->getIgnoredAllDataPropertiesExpect() || in_array($property->getName(), $this->getIgnoredAllDataPropertiesExpect(), true);
 
-                return ('Response' === $property->getClass() || 'AccountResponse' === $property->getClass()) && $notIgnored && $notIgnoredWithRespectToOnly;
+                return ($classReflector->getNamespace() === $property->getClass()) && $notIgnored && $notIgnoredWithRespectToOnly;
             }
         );
     }
