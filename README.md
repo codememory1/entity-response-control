@@ -113,7 +113,7 @@ $response = $userResponse
     * __$full__: bool - default(false) - If true instead of a string, a DateTime array with full information will be returned
   * __XSS__ - Protecting input strings or strings in an array from XSS attack
   * __FromEnum__ - Returns an array consisting of key and label from Enum
-    * __$enum__ - Enum namespace
+    * __$enum__: string|null - Namespace Enum if the value is a string, or leave null if the value is already an enum object
   * __CropString__ - Trims a string to its maximum length
     * __$maxlength__: INT - Maximum string length
     * __$end__: string - default(...) - Character at the end of a string if the string was truncated

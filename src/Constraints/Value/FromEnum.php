@@ -10,7 +10,7 @@ use Codememory\EntityResponseControl\Interfaces\ConstraintInterface;
 final class FromEnum implements ConstraintInterface
 {
     public function __construct(
-        public readonly string $enum
+        public readonly ?string $enum = null # If value is string, argument is required
     ) {
     }
 
