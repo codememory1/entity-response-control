@@ -21,7 +21,7 @@ final class DateTimeHandler implements ValueConverterConstraintHandlerInterface
                 return $value?->format($constraint->format);
             }
 
-            return $this->toArray($value);
+            return null === $value ? null : $this->toArray($value);
         }
 
         return null;

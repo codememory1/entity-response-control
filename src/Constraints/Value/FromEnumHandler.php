@@ -18,6 +18,7 @@ final class FromEnumHandler implements ValueConverterConstraintHandlerInterface
      */
     public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): ?array
     {
+        $responseControlNamespace = $constraintTypeControl->responseControl::class;
         $value = $constraintTypeControl->getValue();
 
         if (empty($value)) {
@@ -26,18 +27,18 @@ final class FromEnumHandler implements ValueConverterConstraintHandlerInterface
 
         if (null === $constraint->enum) {
             if (!$value instanceof UnitEnum) {
-                throw new LogicException("The value that goes into the {$constraintTypeControl->property->getName()} property of the {$constraintTypeControl->responseControl::class} ResponseControl must implement \UnitEnum");
+                throw new LogicException("The value that goes into the {$constraintTypeControl->property->getName()} property of the $responseControlNamespace ResponseControl must implement \UnitEnum");
             }
 
             if (!$value instanceof BackedEnum) {
-                throw new LogicException("The value that goes into the {$constraintTypeControl->property->getName()} property of the {$constraintTypeControl->responseControl::class} ResponseControl must implement \BackedEnum");
+                throw new LogicException("The value that goes into the {$constraintTypeControl->property->getName()} property of the $responseControlNamespace ResponseControl must implement \BackedEnum");
             }
 
             return $this->buildValue($value->name, $value->value);
         }
 
         $pathToCase = "{$constraint->enum}::{$value}";
-;
+
         return !defined($pathToCase) ? null : $this->buildValue($value, constant($pathToCase)->value);
     }
 
