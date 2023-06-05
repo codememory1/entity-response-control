@@ -71,7 +71,7 @@ final class ObjectDisassembler implements ObjectDisassemblerInterface
                 $notIgnored = !in_array($property->getName(), $this->getIgnoredDataProperties(), true);
                 $notIgnoredWithRespectToOnly = [] === $this->getIgnoredAllDataPropertiesExpect() || in_array($property->getName(), $this->getIgnoredAllDataPropertiesExpect(), true);
 
-                return ($classReflector->getName() === $property->getClass()) && $notIgnored && $notIgnoredWithRespectToOnly;
+                return $classReflector->getName() !== ResponseControl::class && $notIgnored && $notIgnoredWithRespectToOnly;
             }
         );
     }
