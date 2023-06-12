@@ -14,7 +14,7 @@ final class CallbackResponseHandler implements ValueConverterConstraintHandlerIn
     /**
      * @param CallbackResponse $constraint
      */
-    public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): array
+    public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): mixed
     {
         $value = $constraintTypeControl->getValue();
         $namespaceResponseControl = $constraint->namespaceResponseData;
@@ -24,7 +24,7 @@ final class CallbackResponseHandler implements ValueConverterConstraintHandlerIn
         }
 
         if (!is_array($value) && !is_object($value)) {
-            return [];
+            return $constraintTypeControl->property->getDefaultValue();
         }
 
         $disassembler = new ($constraint->disassembler)();

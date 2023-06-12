@@ -16,13 +16,13 @@ final class FromEnumHandler implements ValueConverterConstraintHandlerInterface
     /**
      * @param FromEnum $constraint
      */
-    public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): ?array
+    public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): mixed
     {
         $responseControlNamespace = $constraintTypeControl->responseControl::class;
         $value = $constraintTypeControl->getValue();
 
         if (empty($value)) {
-            return null;
+            return $constraintTypeControl->property->getDefaultValue();
         }
 
         if (null === $constraint->enum) {

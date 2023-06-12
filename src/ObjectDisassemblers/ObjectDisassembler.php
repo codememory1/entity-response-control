@@ -8,6 +8,7 @@ use Codememory\EntityResponseControl\Interfaces\ObjectDisassemblerInterface;
 use Codememory\EntityResponseControl\ResponseControl;
 use Codememory\Reflection\Reflectors\ClassReflector;
 use Codememory\Reflection\Reflectors\PropertyReflector;
+use ReflectionProperty;
 
 final class ObjectDisassembler implements ObjectDisassemblerInterface
 {
@@ -65,13 +66,16 @@ final class ObjectDisassembler implements ObjectDisassemblerInterface
 
     private function getProperties(ClassReflector $classReflector): array
     {
-        return array_filter(
-            $classReflector->getPrivateProperties(),
-            function(PropertyReflector $property) use ($classReflector) {
-                $notIgnored = !in_array($property->getName(), $this->getIgnoredDataProperties(), true);
-                $notIgnoredWithRespectToOnly = [] === $this->getIgnoredAllDataPropertiesExpect() || in_array($property->getName(), $this->getIgnoredAllDataPropertiesExpect(), true);
+        $ignoredDataProperties = $this->getIgnoredDataProperties();
+        $ignoredAllDataPropertiesExpect = $this->getIgnoredAllDataPropertiesExpect();
 
-                return $classReflector->getName() !== ResponseControl::class && $notIgnored && $notIgnoredWithRespectToOnly;
+        return array_filter(
+            $classReflector->getPropertiesIncludingParent([ResponseControl::class], ReflectionProperty::IS_PRIVATE),
+            static function(PropertyReflector $property) use ($ignoredDataProperties, $ignoredAllDataPropertiesExpect) {
+                $notIgnored = !in_array($property->getName(), $ignoredDataProperties, true);
+                $notIgnoredWithRespectToOnly = [] === $ignoredAllDataPropertiesExpect || in_array($property->getName(), $ignoredAllDataPropertiesExpect, true);
+
+                return $notIgnored && $notIgnoredWithRespectToOnly;
             }
         );
     }
