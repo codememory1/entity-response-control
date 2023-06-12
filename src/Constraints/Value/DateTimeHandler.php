@@ -15,16 +15,17 @@ final class DateTimeHandler implements ValueConverterConstraintHandlerInterface
     public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): mixed
     {
         $value = $constraintTypeControl->getValue();
+        $defaultValue = $constraintTypeControl->property->getDefaultValue();
 
         if ($value instanceof DateTimeInterface || null === $value) {
             if (!$constraint->full) {
                 return $value?->format($constraint->format);
             }
 
-            return null === $value ? null : $this->toArray($value);
+            return null === $value ? $defaultValue : $this->toArray($value);
         }
 
-        return null;
+        return $defaultValue;
     }
 
     private function toArray(DateTimeInterface $dateTime): array

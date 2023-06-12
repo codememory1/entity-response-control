@@ -10,7 +10,7 @@ use Codememory\EntityResponseControl\Interfaces\ValueConverterConstraintHandlerI
 final class CallbackHandler implements ValueConverterConstraintHandlerInterface
 {
     /**
-     * @param callable $constraint
+     * @param Callback $constraint
      */
     public function handle(ConstraintInterface $constraint, ConstraintTypeControl $constraintTypeControl): mixed
     {

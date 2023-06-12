@@ -22,7 +22,7 @@ final class FromEnumHandler implements ValueConverterConstraintHandlerInterface
         $value = $constraintTypeControl->getValue();
 
         if (empty($value)) {
-            return null;
+            return $constraintTypeControl->property->getDefaultValue();
         }
 
         if (null === $constraint->enum) {
