@@ -57,6 +57,7 @@ final class NestedPrototypeHandler implements DecoratorHandlerInterface
             $context->getResponsePrototype()->getCollector(),
             $context->getResponsePrototype()->getConfigurationFactory(),
             $context->getResponsePrototype()->getExecutionContextFactory(),
+            $context->getResponsePrototype()->getDecoratorHandlerRegistrar(),
             $context->getResponsePrototype()->getReflectorManager()
         );
     }

@@ -2,7 +2,6 @@
 
 namespace Codememory\EntityResponseControl\Collectors;
 
-use Codememory\EntityResponseControl\Exception\DecoratorHandlerNotRegisteredException;
 use Codememory\EntityResponseControl\Interfaces\CollectorInterface;
 use Codememory\EntityResponseControl\Interfaces\DecoratorInterface;
 use Codememory\EntityResponseControl\Interfaces\ExecutionContextInterface;
@@ -11,9 +10,6 @@ use Codememory\Reflection\Reflectors\PropertyReflector;
 
 final class BaseCollector implements CollectorInterface
 {
-    /**
-     * @throws DecoratorHandlerNotRegisteredException
-     */
     public function collect(ResponsePrototypeInterface $responsePrototype, object $prototypeObject, array $properties): array
     {
         $collectedData = [];
@@ -35,9 +31,6 @@ final class BaseCollector implements CollectorInterface
         return $collectedData;
     }
 
-    /**
-     * @throws DecoratorHandlerNotRegisteredException
-     */
     private function propertyAttributesHandler(PropertyReflector $property, ExecutionContextInterface $context): void
     {
         foreach ($property->getAttributes() as $attribute) {
@@ -54,15 +47,12 @@ final class BaseCollector implements CollectorInterface
         }
     }
 
-    /**
-     * @throws DecoratorHandlerNotRegisteredException
-     */
     private function propertyAttributeHandler(DecoratorInterface $decorator, ExecutionContextInterface $context): void
     {
         $context
             ->getResponsePrototype()
-            ->getConfiguration()
-            ->getDecoratorHandler($decorator->getHandler())
+            ->getDecoratorHandlerRegistrar()
+            ->getHandler($decorator->getHandler())
             ->handle($decorator, $context);
     }
 }

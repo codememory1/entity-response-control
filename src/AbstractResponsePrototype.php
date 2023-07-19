@@ -5,6 +5,7 @@ namespace Codememory\EntityResponseControl;
 use Codememory\EntityResponseControl\Interfaces\CollectorInterface;
 use Codememory\EntityResponseControl\Interfaces\ConfigurationFactoryInterface;
 use Codememory\EntityResponseControl\Interfaces\ConfigurationInterface;
+use Codememory\EntityResponseControl\Interfaces\DecoratorHandlerRegistrarInterface;
 use Codememory\EntityResponseControl\Interfaces\ExecutionContextFactoryInterface;
 use Codememory\EntityResponseControl\Interfaces\ResponsePrototypeInterface;
 use Codememory\Reflection\ReflectorManager;
@@ -31,6 +32,7 @@ abstract class AbstractResponsePrototype implements ResponsePrototypeInterface
         protected readonly CollectorInterface $_collector,
         protected readonly ConfigurationFactoryInterface $_configurationFactory,
         protected readonly ExecutionContextFactoryInterface $_executionContextFactory,
+        protected readonly DecoratorHandlerRegistrarInterface $_decoratorHandlerRegistrar,
         protected readonly ReflectorManager $_reflectorManager
     ) {
         $this->_classReflector = $this->_reflectorManager->getReflector(static::class);
@@ -55,6 +57,11 @@ abstract class AbstractResponsePrototype implements ResponsePrototypeInterface
     public function getExecutionContextFactory(): ExecutionContextFactoryInterface
     {
         return $this->_executionContextFactory;
+    }
+
+    public function getDecoratorHandlerRegistrar(): DecoratorHandlerRegistrarInterface
+    {
+        return $this->_decoratorHandlerRegistrar;
     }
 
     public function getReflectorManager(): ReflectorManager

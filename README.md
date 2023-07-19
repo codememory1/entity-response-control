@@ -27,6 +27,7 @@ use Codememory\Reflection\ReflectorManager;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Codememory\EntityResponseControl\Factory\ConfigurationFactory;
 use Codememory\EntityResponseControl\Factory\ExecutionContextFactory;
+use Codememory\EntityResponseControl\DecoratorHandlerRegistrar;
 
 // We have some entity User
 class User {
@@ -63,6 +64,7 @@ $userResponse = new UserResponsePrototype(
     new BaseCollector(),
     new ConfigurationFactory(),
     new ExecutionContextFactory(),
+    new DecoratorHandlerRegistrar(),
     new ReflectorManager(new FilesystemAdapter('entity-response-control', '/var/cache/codememory'))
 );
 $response = $userResponse->collect(new User())->toArray();
@@ -150,7 +152,7 @@ final class MyDecoratorHandler implements DecoratorHandlerInterface
 ### Registration decorators
 ```php
 // Before calling collect, refer to the configuration
-$responsePrototype->getConfiguration()->registerDecoratorHandler(new MyDecoratorHandler());
+$responsePrototype->getDecoratorHandlerRegistrar()->register(new MyDecoratorHandler());
 
 // Collect prototype...
 ```
@@ -165,6 +167,7 @@ use Codememory\Reflection\Reflectors\PropertyReflector;
 use Codememory\EntityResponseControl\Interfaces\DecoratorInterface;
 use Codememory\EntityResponseControl\Factory\ExecutionContextFactory;
 use Codememory\EntityResponseControl\Factory\ConfigurationFactory;
+use Codememory\EntityResponseControl\DecoratorHandlerRegistrar;
 
 class MyObjectCollector implements CollectorInterface {
     public function collect(ResponsePrototypeInterface $responsePrototype, object $prototypeObject, array $properties): array
@@ -180,7 +183,7 @@ class MyObjectCollector implements CollectorInterface {
                     
                     if ($decorator instanceof DecoratorInterface) {
                         // Getting a decorator handler
-                        $decoratorHandler = $responsePrototype->getConfiguration()->getDecoratorHandler($decorator->getHandler());
+                        $decoratorHandler = $responsePrototype->getDecoratorHandlerRegistrar()->getHandler($decorator->getHandler());
                         
                         // Calling a decorator handler
                         $decoratorHandler->handle($decorator, $context);
@@ -201,7 +204,8 @@ class MyObjectCollector implements CollectorInterface {
 $userResponse = new UserResponse(
     new MyObjectCollector(),
     new ConfigurationFactory(),
-    new ExecutionContextFactory()
+    new ExecutionContextFactory(),
+    new DecoratorHandlerRegistrar(),
     new ReflectorManager(new FilesystemAdapter('entity-response-control', '/var/cache/codememory'))
 );
 
