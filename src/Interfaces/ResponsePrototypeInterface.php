@@ -15,6 +15,8 @@ interface ResponsePrototypeInterface
 
     public function getExecutionContextFactory(): ExecutionContextFactoryInterface;
 
+    public function getDecoratorHandlerRegistrar(): DecoratorHandlerRegistrarInterface;
+
     public function getReflectorManager(): ReflectorManager;
 
     public function getClassReflector(): ClassReflector;
