@@ -10,6 +10,7 @@ use Codememory\EntityResponseControl\Interfaces\ExecutionContextFactoryInterface
 use Codememory\EntityResponseControl\Interfaces\ResponsePrototypeInterface;
 use Codememory\Reflection\ReflectorManager;
 use Codememory\Reflection\Reflectors\ClassReflector;
+use Exception;
 use function is_array;
 use function is_object;
 use IteratorAggregate;
@@ -96,9 +97,15 @@ abstract class AbstractResponsePrototype implements ResponsePrototypeInterface
         return $this->_collectedResponse;
     }
 
+    /**
+     * @throws Exception
+     */
     private function setupData(object|array $data): void
     {
-        if ($data instanceof IteratorAggregate || is_array($data)) {
+        if ($data instanceof IteratorAggregate) {
+            $this->_dataObjects = array_filter(iterator_to_array($data->getIterator()), static fn (mixed $value) => is_object($value));
+            $this->_outputAsOne = false;
+        } else if (is_array($data)) {
             $this->_dataObjects = array_filter($data, static fn (mixed $value) => is_object($value));
             $this->_outputAsOne = false;
         } else {
