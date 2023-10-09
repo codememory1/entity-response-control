@@ -35,7 +35,7 @@ final class NestedPrototypeHandler implements DecoratorHandlerInterface
         $this->skipAllPropertiesExpect($decorator, $prototype->getConfiguration());
 
         if (null === $value) {
-            $context->setValue([]);
+            $context->setValue($context->getProperty()->getDefaultValue());
         } else {
             $context->setValue($prototype->collect($value)->toArray());
         }
