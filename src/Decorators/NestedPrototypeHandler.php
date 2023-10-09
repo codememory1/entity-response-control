@@ -34,24 +34,38 @@ final class NestedPrototypeHandler implements DecoratorHandlerInterface
         $this->skipProperties($decorator, $prototype->getConfiguration());
         $this->skipAllPropertiesExpect($decorator, $prototype->getConfiguration());
 
-        $context->setValue($prototype->collect($value)->toArray());
+        if (null === $value) {
+            $context->setValue([]);
+        } else {
+            $context->setValue($prototype->collect($value)->toArray());
+        }
     }
 
-    private function skipProperties(DecoratorInterface $decorator, ConfigurationInterface $configuration): void
+    private function skipProperties(NestedPrototype $decorator, ConfigurationInterface $configuration): void
     {
         if ([] !== $decorator->skipProperties && [] === $decorator->skipAllPropertiesExpect) {
-            $configuration->getResponsePrototypePropertyProvider()->setExtension(static fn (array $properties) => array_filter($properties, static fn (PropertyReflector $property) => !in_array($property->getName(), $decorator->skipProperties, true)));
+            $configuration
+                ->getResponsePrototypePropertyProvider()
+                ->setExtension(static fn (array $properties) => array_filter(
+                    $properties,
+                    static fn (PropertyReflector $property) => !in_array($property->getName(), $decorator->skipProperties, true)
+                ));
         }
     }
 
-    private function skipAllPropertiesExpect(DecoratorInterface $decorator, ConfigurationInterface $configuration): void
+    private function skipAllPropertiesExpect(NestedPrototype $decorator, ConfigurationInterface $configuration): void
     {
         if ([] !== $decorator->skipAllPropertiesExpect && [] === $decorator->skipProperties) {
-            $configuration->getResponsePrototypePropertyProvider()->setExtension(static fn (array $properties) => array_filter($properties, static fn (PropertyReflector $property) => in_array($property->getName(), $decorator->skipAllPropertiesExpect, true)));
+            $configuration
+                ->getResponsePrototypePropertyProvider()
+                ->setExtension(static fn (array $properties) => array_filter(
+                    $properties,
+                    static fn (PropertyReflector $property) => in_array($property->getName(), $decorator->skipAllPropertiesExpect, true)
+                ));
         }
     }
 
-    private function createPrototype(DecoratorInterface $decorator, ExecutionContextInterface $context): ResponsePrototypeInterface
+    private function createPrototype(NestedPrototype $decorator, ExecutionContextInterface $context): ResponsePrototypeInterface
     {
         return new ($decorator->prototype)(
             $context->getResponsePrototype()->getCollector(),
