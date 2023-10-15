@@ -21,7 +21,7 @@ final class CustomHandler implements DecoratorHandlerInterface
         }
 
         $context->setValue($context->getResponsePrototype()->{$decorator->methodName}(
-            $context->getResponsePrototype(),
+            $context->getPrototypeObject(),
             $context->getValue()
         ));
     }
