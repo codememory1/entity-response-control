@@ -15,10 +15,6 @@ final class MaxElementsHandler implements DecoratorHandlerInterface
     {
         $value = $context->getValue();
 
-        if (empty($value)) {
-            $context->setValue([]);
-        } else {
-            $context->setValue(array_splice($value, 0, $decorator->max));
-        }
+        $context->setValue(empty($value) ? [] : array_splice($value, 0, $decorator->max));
     }
 }

@@ -21,8 +21,8 @@ final class PrefixHandler implements DecoratorHandlerInterface
         if (null !== $decorator->prototypeObject) {
             $context->setNameGetterToGetValueFromObject(u("{$decorator->prototypeObject}_{$propertyName}")->camel());
 
-            if (!method_exists($context->getPrototypeObject(), $context->getNameGetterToGetValueFromObject())) {
-                throw new MethodNotFoundException($context->getPrototypeObject(), $context->getNameGetterToGetValueFromObject());
+            if (!method_exists($context->getPrototypeObject(), $context->getNameGetterToGetValueFromObject()[0])) {
+                throw new MethodNotFoundException($context->getPrototypeObject(), $context->getNameGetterToGetValueFromObject()[0]);
             }
 
             $context->setValue($context->getPrototypeObject()->{$context->getNameGetterToGetValueFromObject()}());

@@ -30,6 +30,7 @@ class DecoratorHandlerRegistrar implements DecoratorHandlerRegistrarInterface
         $this->register(new Decorators\PrefixHandler());
         $this->register(new Decorators\PrototypeObjectGetterMethodHandler());
         $this->register(new Decorators\HiddenNullableHandler());
+        $this->register(new Decorators\PluralHandler());
     }
 
     public function register(DecoratorHandlerInterface $handler): DecoratorHandlerRegistrarInterface

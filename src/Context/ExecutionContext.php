@@ -10,7 +10,7 @@ use function Symfony\Component\String\u;
 final class ExecutionContext implements ExecutionContextInterface
 {
     private string $responseKey;
-    private string $nameGetterToGetValueFromObject;
+    private array $nameGetterToGetValueFromObject;
     private mixed $value = null;
     private bool $skippedThisProperty = false;
 
@@ -20,7 +20,10 @@ final class ExecutionContext implements ExecutionContextInterface
         private readonly object $prototypeObject
     ) {
         $this->responseKey = $this->responsePrototype->getConfiguration()->getResponseKeyNamingStrategy()->convert($this->property->getName());
-        $this->nameGetterToGetValueFromObject = u("get_{$this->property->getName()}")->camel();
+        $this->nameGetterToGetValueFromObject = [
+            u("get_{$this->property->getName()}")->camel()->toString(),
+            u("is_{$this->property->getName()}")->camel()->toString()
+        ];
     }
 
     public function getResponsePrototype(): ResponsePrototypeInterface
@@ -45,14 +48,14 @@ final class ExecutionContext implements ExecutionContextInterface
         return $this;
     }
 
-    public function getNameGetterToGetValueFromObject(): string
+    public function getNameGetterToGetValueFromObject(): array
     {
         return $this->nameGetterToGetValueFromObject;
     }
 
-    public function setNameGetterToGetValueFromObject(string $name): ExecutionContextInterface
+    public function setNameGetterToGetValueFromObject(array|string $names): ExecutionContextInterface
     {
-        $this->nameGetterToGetValueFromObject = $name;
+        $this->nameGetterToGetValueFromObject = is_string($names) ? [$names] : $names;
 
         return $this;
     }

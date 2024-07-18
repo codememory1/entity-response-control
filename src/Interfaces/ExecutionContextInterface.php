@@ -14,9 +14,12 @@ interface ExecutionContextInterface
 
     public function setResponseKey(string $name): self;
 
-    public function getNameGetterToGetValueFromObject(): string;
+    /**
+     * @return array<int, string>
+     */
+    public function getNameGetterToGetValueFromObject(): array;
 
-    public function setNameGetterToGetValueFromObject(string $name): self;
+    public function setNameGetterToGetValueFromObject(array|string $names): self;
 
     public function getValue(): mixed;
 

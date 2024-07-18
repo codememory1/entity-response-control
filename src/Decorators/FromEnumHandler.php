@@ -6,8 +6,6 @@ use BackedEnum;
 use Codememory\EntityResponseControl\Interfaces\DecoratorHandlerInterface;
 use Codememory\EntityResponseControl\Interfaces\DecoratorInterface;
 use Codememory\EntityResponseControl\Interfaces\ExecutionContextInterface;
-use function constant;
-use function defined;
 use LogicException;
 use UnitEnum;
 
@@ -18,39 +16,73 @@ final class FromEnumHandler implements DecoratorHandlerInterface
      */
     public function handle(DecoratorInterface $decorator, ExecutionContextInterface $context): void
     {
-        $prototypeNamespace = $context->getResponsePrototype()::class;
-        $value = $context->getValue();
+        $currentValue = $context->getValue();
+        $newValue = $context->getProperty()->getDefaultValue();
 
-        if (empty($value)) {
-            $context->setValue($context->getProperty()->getDefaultValue());
+        if (!in_array($decorator->format, FromEnum::FORMATS, true)) {
+            $this->throwIfInvalidFormat($context, $decorator->format);
         }
 
-        if (null === $decorator->enum) {
-            if (!$value instanceof UnitEnum) {
-                throw new LogicException("The value that goes into the {$context->getProperty()->getName()} property of the {$prototypeNamespace} ResponseControl must implement \UnitEnum");
-            }
+        if (!empty($currentValue)) {
+            $newValue = match ($decorator->format) {
+                FromEnum::KEY_LABEL_FORMAT => $this->keyLabelFormat($context, $currentValue),
+                FromEnum::ONLY_KEY_FORMAT => $this->onlyKeyFormat($context, $currentValue),
+                FromEnum::ONLY_LABEL_FORMAT => $this->onlyLabelFormat($context, $currentValue),
+            };
+        }
 
-            if (!$value instanceof BackedEnum) {
-                throw new LogicException("The value that goes into the {$context->getProperty()->getName()} property of the {$prototypeNamespace} ResponseControl must implement \BackedEnum");
-            }
+        $context->setValue($newValue);
+    }
 
-            $context->setValue($this->buildValue($value->name, $value->value));
-        } else {
-            $pathToCase = "{$decorator->enum}::{$value}";
+    private function keyLabelFormat(ExecutionContextInterface $context, mixed $enum): array
+    {
+        $this->throwIfNotUnitEnum($context, $enum);
+        $this->throwIfNotBackedEnum($context, $enum);
 
-            if (!defined($pathToCase)) {
-                $context->setValue($context->getProperty()->getDefaultValue());
-            } else {
-                $context->setValue($this->buildValue($value, constant($pathToCase)->value));
-            }
+        return [
+            'key' => $enum->name,
+            'label' => $enum->value
+        ];
+    }
+
+    private function onlyKeyFormat(ExecutionContextInterface $context, mixed $enum): string
+    {
+        $this->throwIfNotUnitEnum($context, $enum);
+
+        return $enum->name;
+    }
+
+    private function onlyLabelFormat(ExecutionContextInterface $context, mixed $enum): int|string
+    {
+        $this->throwIfNotBackedEnum($context, $enum);
+
+        return $enum->value;
+    }
+
+    private function throwIfInvalidFormat(ExecutionContextInterface $context, string $format): void
+    {
+        $prototypeClass = $context->getResponsePrototype()::class;
+
+        if (!in_array($format, FromEnum::FORMATS, true)) {
+            throw new LogicException("Incorrect enum output format in the \"{$prototypeClass}\" prototype in the \"{$context->getProperty()->getName()}\" property");
         }
     }
 
-    private function buildValue(string $key, string|int $label): array
+    private function throwIfNotUnitEnum(ExecutionContextInterface $context, mixed $enum): void
     {
-        return [
-            'key' => $key,
-            'label' => $label
-        ];
+        $prototypeClass = $context->getResponsePrototype()::class;
+
+        if (!$enum instanceof UnitEnum) {
+            throw new LogicException("The value that goes into the \"{$context->getProperty()->getName()}\" property of the \"{$prototypeClass}\" ResponseControl must implement \UnitEnum");
+        }
+    }
+
+    private function throwIfNotBackedEnum(ExecutionContextInterface $context, mixed $enum): void
+    {
+        $prototypeClass = $context->getResponsePrototype()::class;
+
+        if (!$enum instanceof BackedEnum) {
+            throw new LogicException("The value that goes into the \"{$context->getProperty()->getName()}\" property of the \"{$prototypeClass}\" ResponseControl must implement \BackedEnum");
+        }
     }
 }

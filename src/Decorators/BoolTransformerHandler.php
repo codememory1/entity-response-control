@@ -13,10 +13,6 @@ final class BoolTransformerHandler implements DecoratorHandlerInterface
      */
     public function handle(DecoratorInterface $decorator, ExecutionContextInterface $context): void
     {
-        if (true === $context->getValue()) {
-            $context->setValue($decorator->trueAs);
-        } else {
-            $context->setValue($decorator->falseAs);
-        }
+        $context->setValue(true === $context->getValue() ? $decorator->trueAs : $decorator->falseAs);
     }
 }
