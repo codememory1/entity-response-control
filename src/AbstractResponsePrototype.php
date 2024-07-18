@@ -12,7 +12,6 @@ use Codememory\Reflection\ReflectorManager;
 use Codememory\Reflection\Reflectors\ClassReflector;
 use Exception;
 use function is_array;
-use function is_object;
 use IteratorAggregate;
 use Psr\Cache\InvalidArgumentException;
 use ReflectionException;
@@ -75,6 +74,9 @@ abstract class AbstractResponsePrototype implements ResponsePrototypeInterface
         return $this->_classReflector;
     }
 
+    /**
+     * @throws Exception
+     */
     public function collect(object|array $data): ResponsePrototypeInterface
     {
         $this->setupData($data);
@@ -103,10 +105,10 @@ abstract class AbstractResponsePrototype implements ResponsePrototypeInterface
     private function setupData(object|array $data): void
     {
         if ($data instanceof IteratorAggregate) {
-            $this->_dataObjects = array_filter(iterator_to_array($data->getIterator()), static fn (mixed $value) => is_object($value));
+            $this->_dataObjects = array_filter(iterator_to_array($data->getIterator()), is_object(...));
             $this->_outputAsOne = false;
         } else if (is_array($data)) {
-            $this->_dataObjects = array_filter($data, static fn (mixed $value) => is_object($value));
+            $this->_dataObjects = array_filter($data, is_object(...));
             $this->_outputAsOne = false;
         } else {
             $this->_dataObjects = [$data];

@@ -17,13 +17,20 @@ final class ExecutionContextFactory implements ExecutionContextFactoryInterface
         $configuration = $responsePrototype->getConfiguration();
 
         $context->setSkipThisProperty(false);
-        $context->setNameGetterToGetValueFromObject(u("get_{$property->getName()}")->camel());
+        $context->setNameGetterToGetValueFromObject([
+            u("get_{$property->getName()}")->camel()->toString(),
+            u("is_{$property->getName()}")->camel()->toString()
+        ]);
         $context->setResponseKey($configuration->getResponseKeyNamingStrategy()->convert($property->getName()));
 
-        if (method_exists($prototypeObject, $context->getNameGetterToGetValueFromObject())) {
-            $context->setValue($prototypeObject->{$context->getNameGetterToGetValueFromObject()}());
-        } else {
-            $context->setValue($property->getDefaultValue());
+        $context->setValue($property->getDefaultValue());
+
+        foreach ($context->getNameGetterToGetValueFromObject() as $prototypeObjectGetterMethodName) {
+            if (method_exists($prototypeObject, $prototypeObjectGetterMethodName)) {
+                $context->setValue($prototypeObject->{$prototypeObjectGetterMethodName}());
+
+                break;
+            }
         }
 
         return $context;

@@ -14,13 +14,20 @@ final class CallbackHandler implements DecoratorHandlerInterface
      */
     public function handle(DecoratorInterface $decorator, ExecutionContextInterface $context): void
     {
-        if (!method_exists($context->getProperty(), $decorator->methodName)) {
-            throw new MethodNotFoundException($context->getProperty(), $decorator->methodName);
+        if (!method_exists($context->getResponsePrototype(), $decorator->methodName)) {
+            throw new MethodNotFoundException($context->getResponsePrototype(), $decorator->methodName);
         }
 
-        $context->setValue($context->getProperty()->{$decorator->methodName}(
-            $context->getPrototypeObject(),
-            $context->getValue()
-        ));
+        $context->setValue(
+            $context
+                ->getResponsePrototype()
+                ->getClassReflector()
+                ->getMethodByName($decorator->methodName)
+                ->invoke(
+                    $context->getResponsePrototype(),
+                    $context->getPrototypeObject(),
+                    $context->getValue()
+                )
+        );
     }
 }

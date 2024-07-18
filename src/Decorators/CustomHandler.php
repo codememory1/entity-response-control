@@ -20,9 +20,12 @@ final class CustomHandler implements DecoratorHandlerInterface
             throw new MethodNotFoundException($context->getResponsePrototype(), $decorator->methodName);
         }
 
-        $context->setValue($context->getResponsePrototype()->{$decorator->methodName}(
-            $context->getPrototypeObject(),
-            $context->getValue()
-        ));
+        $context->setValue(
+            $context
+                ->getResponsePrototype()
+                ->getClassReflector()
+                ->getMethodByName($decorator->methodName)
+                ->invoke($context->getPrototypeObject(), $context->getValue())
+        );
     }
 }
