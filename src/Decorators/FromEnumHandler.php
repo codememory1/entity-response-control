@@ -23,15 +23,30 @@ final class FromEnumHandler implements DecoratorHandlerInterface
             $this->throwIfInvalidFormat($context, $decorator->format);
         }
 
-        if (!empty($currentValue)) {
-            $newValue = match ($decorator->format) {
-                FromEnum::KEY_LABEL_FORMAT => $this->keyLabelFormat($context, $currentValue),
-                FromEnum::ONLY_KEY_FORMAT => $this->onlyKeyFormat($context, $currentValue),
-                FromEnum::ONLY_LABEL_FORMAT => $this->onlyLabelFormat($context, $currentValue),
-            };
+        if ($decorator->multiple) {
+            if (is_array($currentValue)) {
+                $newValue = [];
+                
+                foreach ($currentValue as $case) {
+                    $newValue[] = $this->formatValue($decorator, $context, $case);
+                }
+            }
+        } else {
+            if (!empty($currentValue)) {
+                $newValue = $this->formatValue($decorator, $context, $currentValue);
+            }
         }
 
         $context->setValue($newValue);
+    }
+
+    private function formatValue(FromEnum $decorator, ExecutionContextInterface $context, mixed $value): mixed
+    {
+        return match ($decorator->format) {
+            FromEnum::KEY_LABEL_FORMAT => $this->keyLabelFormat($context, $value),
+            FromEnum::ONLY_KEY_FORMAT => $this->onlyKeyFormat($context, $value),
+            FromEnum::ONLY_LABEL_FORMAT => $this->onlyLabelFormat($context, $value),
+        };
     }
 
     private function keyLabelFormat(ExecutionContextInterface $context, mixed $enum): array

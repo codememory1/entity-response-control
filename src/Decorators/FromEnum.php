@@ -18,7 +18,8 @@ final class FromEnum implements DecoratorInterface
     ];
 
     public function __construct(
-        public readonly string $format = self::KEY_LABEL_FORMAT
+        public readonly string $format = self::KEY_LABEL_FORMAT,
+        public readonly bool $multiple = false
     ) {
     }
 
