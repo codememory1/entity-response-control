@@ -2,6 +2,6 @@
 
 namespace Codememory\EntityResponseControl\Interfaces;
 
-interface DecoratorHandlerInterface
+interface PropertyDecoratorInterface extends DecoratorInterface
 {
 }
