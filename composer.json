@@ -17,7 +17,7 @@
     "require": {
         "php": ">=8.3",
         "codememory/reflection": "^3.0",
-        "symfony/string": "^7.0"
+        "symfony/string": "^7.2"
     },
     "config": {
         "optimize-autoloader": true,
