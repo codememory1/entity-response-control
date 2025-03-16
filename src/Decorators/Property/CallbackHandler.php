@@ -20,7 +20,7 @@ class CallbackHandler implements PropertyDecoratorHandlerInterface
         if (!method_exists($className, $methodName)) {
             throw new RuntimeException("Method '{$methodName}' does not exist in class '{$className}'.");
         }
-        
+
         $executionContext->setValue($className::{$methodName}($executionContext));
     }
 
