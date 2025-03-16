@@ -20,6 +20,7 @@ class DecoratorRegistrar implements DecoratorRegistrarInterface
         $this->registerHandler(new Property\TimestampHandler());
         $this->registerHandler(new Property\FromMetadataHandler());
         $this->registerHandler(new Property\FromEnumHandler());
+        $this->registerHandler(new Property\CallbackHandler());
         $this->registerHandler(new Prototype\IgnorePropertiesHandler());
         $this->registerHandler(new Prototype\CallbackHandler());
         $this->registerHandler(new Prototype\GeneralPropertyDecoratorsHandler());
