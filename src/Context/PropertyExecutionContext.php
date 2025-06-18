@@ -37,9 +37,7 @@ class PropertyExecutionContext implements PropertyExecutionContextInterface
         $this->ignore = false;
         $this->collectedKey = null;
 
-        if (isset($this->value)) {
-            $this->value = null;
-        }
+        unset($this->value);
 
         return $this;
     }
