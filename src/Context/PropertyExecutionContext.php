@@ -5,6 +5,7 @@ namespace Codememory\EntityResponseControl\Context;
 use Codememory\EntityResponseControl\Interfaces\PropertyExecutionContextInterface;
 use Codememory\EntityResponseControl\Interfaces\PropertyWrapperInterface;
 use Codememory\EntityResponseControl\Interfaces\PrototypeExecutionContextInterface;
+use Error;
 use function sprintf;
 
 class PropertyExecutionContext implements PropertyExecutionContextInterface
@@ -91,17 +92,17 @@ class PropertyExecutionContext implements PropertyExecutionContextInterface
 
     public function getValue(): mixed
     {
-        if (isset($this->value)) {
+        try {
             return $this->value;
-        }
-
-        foreach ($this->getGetterNames() as $getterName) {
-            if (method_exists($this->objectData, $getterName)) {
-                return $this->objectData->{$getterName}();
+        } catch (Error) {
+            foreach ($this->getGetterNames() as $getterName) {
+                if (method_exists($this->objectData, $getterName)) {
+                    return $this->objectData->{$getterName}();
+                }
             }
-        }
 
-        return $this->propertyWrapper->getPropertyReflector()->getDefaultValue();
+            return $this->propertyWrapper->getPropertyReflector()->getDefaultValue();
+        }
     }
 
     public function setValue(mixed $value): PropertyExecutionContextInterface
